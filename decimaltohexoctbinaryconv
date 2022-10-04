@@ -60,29 +60,7 @@ int main() {
             printf("\nOctal: ");
             decimalToOct(decValue, &octString[30]);
             
-        // ////////////////////////////////////////////////////////////////////
-        // Asks user if they wish to save file!
-        // ////////////////////////////////////////////////////////////////////
-            printf("\nSave to a file? (y/n): ");
-            fgets(userresponse, sizeof(userresponse), stdin);
-            userres = atoi(userresponse);
-            
-            
-            if (userres == y){
-                printf("Enter file name: ");
-                scanf("%s", &filename);
-                printf("\n\nFile Saved!\nGoodbye!! :)");
-            }
-            
-            else if(userres == n){
-                printf("\n\nGoodbye!! :)");
-            }
-            
-            else if(!(userres == n) && !(userres == y)){
-                printf("Error: illegal Value! \nGoodbye!");
-            }
-            
-            return 0;
+            printf("\n\nGoodbye!! :)");
         }
         
 }
