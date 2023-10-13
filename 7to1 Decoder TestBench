@@ -1,0 +1,62 @@
+-- Course: ECE 232 - Digital System Design Lab
+-- Author: John Sejas-Cordova
+-- 
+-- Create Date: 3-29-2023
+-- Experiment Name: Multiplexers, Decoders, and Encoders in VHDL (Lab #7)
+-- Design Name: Lab_7_2
+-- Project Name: Lab_7_2 - Behavioral
+--
+-- Description:	Test bench for the 3-to-8 Decoder (Lab_7_2).
+--				The test bench should cover all test conditions (i.e. an "exhaustive" test).
+--				There are 16 test conditions:  DEC_in = "000" through "111" and DEC_enable = '0' or '1'
+--------------------------------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity Lab_7_2_tb is
+end Lab_7_2_tb;
+
+architecture behavior of Lab_7_2_tb is
+
+-- component declaration for unit under test
+component lab_7_2 is
+   Port ( DEC_in : in STD_LOGIC_VECTOR(2 downto 0);
+		  DEC_enable : in STD_LOGIC;
+          DEC_out : out STD_LOGIC_VECTOR(0 to 7)
+		  );
+end component;
+
+-- signals declared for use in the testbench 
+signal DEC_in_tb : STD_LOGIC_VECTOR(2 downto 0); 
+signal DEC_enable_tb : STD_LOGIC;
+signal DEC_out_tb : STD_LOGIC_VECTOR(0 to 7);
+
+begin
+
+	-- instantiate the unit under test (uut)
+	uut : lab_7_2 port map (
+			DEC_in => DEC_in_tb,
+			DEC_enable => DEC_enable_tb,
+			DEC_out => DEC_out_tb
+		);
+
+	DEC_simulation: process
+	begin
+	
+DEC_in_tb <= "000";
+    DEC_enable_tb <= '0';
+
+    for i in 0 to 1 loop
+
+        for j in 0 to 7 loop
+            wait for 10 ns;
+            DEC_in_tb <= DEC_in_tb + 1;
+        end loop;
+        DEC_enable_tb <=  '1';
+    end loop;
+
+
+	end process DEC_simulation;
+	
+end behavior;
