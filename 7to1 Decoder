@@ -1,0 +1,34 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity lab_7_2 is
+   Port ( DEC_in : in STD_LOGIC_VECTOR(2 downto 0);
+          DEC_enable : in STD_LOGIC;
+          DEC_out : out STD_LOGIC_VECTOR(0 to 7)
+          );
+end lab_7_2;
+
+architecture behavioral of lab_7_2 is
+
+signal DEC_all : STD_LOGIC_VECTOR (3 downto 0);
+
+begin
+
+DEC_all <= DEC_enable & DEC_in;
+
+with DEC_all select
+    DEC_out <= "01111111" when "1000",
+            "10111111" when "1001",
+            "11011111" when "1010",
+            "11101111" when "1011",
+            "11110111" when "1100",
+            "11111011" when "1101",
+            "11111101" when "1110",
+            "11111110" when "1111",
+            "11111111" when others;
+
+    -- Insert your code for the 3-to-8 Decoder.
+
+
+end behavioral;
