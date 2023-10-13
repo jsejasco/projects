@@ -1,0 +1,24 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity lab_7_1 is
+    Port ( A, B, C, D : in STD_LOGIC_VECTOR(3 downto 0);
+           Sel : in STD_LOGIC_VECTOR(1 downto 0);
+           F : out STD_LOGIC_VECTOR(3 downto 0)
+           );
+end lab_7_1;
+
+architecture behavioral of lab_7_1 is
+
+begin
+
+with Sel select
+    F <= A when "00",
+         B when "01",
+         C when "10",
+         D when "11",
+         "0000" when others;
+
+    -- Insert your code for the 4-bit 4-to-1 Multiplexer.
+
+end behavioral;
