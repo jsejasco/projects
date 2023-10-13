@@ -1,0 +1,56 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity Lab_7_1_tb is
+end Lab_7_1_tb;
+
+architecture behavior of Lab_7_1_tb is
+
+-- component declaration for unit under test
+component lab_7_1 is
+    Port ( A, B, C, D : in STD_LOGIC_VECTOR(3 downto 0);
+           Sel : in STD_LOGIC_VECTOR(1 downto 0);
+           F : out STD_LOGIC_VECTOR(3 downto 0)
+           );
+end component;
+
+-- signals declared for use in the testbench 
+signal A_tb, B_tb, C_tb, D_tb : STD_LOGIC_VECTOR(3 downto 0); 
+signal Sel_tb : STD_LOGIC_VECTOR(1 downto 0);
+signal F_tb : STD_LOGIC_VECTOR(3 downto 0);
+
+begin
+
+    -- instantiate the unit under test (uut)
+    uut : lab_7_1 port map (
+            A => A_tb,
+            B => B_tb,
+            C => C_tb,
+            D => D_tb,
+            Sel => Sel_tb,
+            F => F_tb
+        );
+
+    MUX_simulation: process
+    begin
+
+A_tb <= "0011";        -- A = 3
+        B_tb <= "0100";        -- B = 4
+        C_tb <= "0101";        -- C = 5
+        D_tb <= "0110";        -- D = 6
+
+        Sel_tb <= "00";        -- Sel = 0
+        wait for 10 ns;
+
+        Sel_tb <= "01";        -- Sel = 1
+        wait for 10 ns;
+
+        Sel_tb <= "10";        -- Sel = 2
+        wait for 10 ns;
+
+        Sel_tb <= "11";        -- Sel = 3
+        wait for 10 ns;
+
+    end process MUX_simulation;
+
+end behavior;
