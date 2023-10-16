@@ -1,0 +1,55 @@
+%Name: John Sejas-Cordova
+%Section 2.1----------------------------------------------------------------------------------------------------------------------
+%Q2
+fs = 10000; nwin=200; noverlap=[]; nfft=[];
+Twin = nwin/fs;
+C = Twin*(f2-f1);
+f1 = 500; f2 = 520;
+tt=0:1/fs:2;
+ss=cos(2*pi*f1*tt) + cos(2*pi*f2*tt);
+spectrogram(ss,nwin,noverlap,nfft,fs,'yaxis')
+axis
+
+%Q3
+fs = 10000; nwin=2000; noverlap=[]; nfft=[];
+Twin = nwin/fs;
+C = Twin*(f2-f1);
+f1 = 2500; f2 = 2520;
+tt=0:1/fs:2;
+ss=cos(2*pi*f1*tt) + cos(2*pi*f2*tt);
+spectrogram(ss,nwin,noverlap,nfft,fs,'yaxis')
+axis
+
+%Q4
+fs = 10000; nwin=400; noverlap=[]; nfft=[];
+Twin = nwin/fs;
+C = Twin*(f2-f1);
+f1 = 500; f2 = 600;
+tt=0:1/fs:2;
+ss=cos(2*pi*f1*tt) + cos(2*pi*f2*tt);
+spectrogram(ss,nwin,noverlap,nfft,fs,'yaxis')
+axis
+%Section 2.2----------------------------------------------------------------------------------------------------------------------
+nwin=400; noverlap=[]; nfft=[];
+Twin = nwin/fs;
+C = Twin*(f2-f1);
+fc=500;
+fs=5000;
+t=0:1/fs:4;
+vt = 1 + 2*cos(2*pi*10*t);
+xt = vt .* cos(2*pi*fc*t);
+spectrogram(vt, nwin, noverlap, nfft, fs, 'yaxis')
+
+
+
+
+
+%Section 2.3----------------------------------------------------------------------------------------------------------------------
+fsamp = 8000; win=256; noverlap=128; nfft=256;
+dt = -1/fsamp;
+dur = 1.8;
+tt = dur : dt : 0;
+psi = 2*pi*(100 + 200*tt + 500*tt.*tt);
+xx = real( 7.7*exp(j*psi) );
+soundsc( xx, fsamp );
+spectrogram(xx,nwin,noverlap,nfft,fs,'yaxis')
