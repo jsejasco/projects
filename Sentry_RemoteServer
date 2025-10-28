@@ -1,0 +1,84 @@
+#----------------------------------------------------------------
+# Name: John D Sejas-Cordova
+# SYST101 Final Project - SENTRY
+# Movement + Light Detection with Siren + Web Server
+#----------------------------------------------------------------
+# main.py
+from Sentry import *
+import socket
+import gc
+from time import sleep
+
+# -----------------------------
+# Thresholds for the sensor
+# -----------------------------
+DISTANCE_THRESHOLD = 30
+LIGHT_THRESHOLD = 62000
+
+# -----------------------------
+# Wifi Setup
+# -----------------------------
+ip = connect_wifi()
+addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
+server = socket.socket()
+server.bind(addr)
+server.listen(1)
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+print('Listening on http://{}:80'.format(ip))
+
+#----------------------------------------------------------------
+# Main Program
+#----------------------------------------------------------------
+previous_status = None
+current_status = "Initializing..."
+
+while True:
+    try:
+        distance = ultra.ultra()
+        light_val = light_sensor.read_u16()
+
+        # Determine current status
+        if distance < DISTANCE_THRESHOLD or light_val < LIGHT_THRESHOLD:
+            if distance > DISTANCE_THRESHOLD and light_val < LIGHT_THRESHOLD:
+                current_status = "Light Detected"
+            else:
+                current_status = "Intrusion Detected"
+        else:
+            current_status = "SAFE: No movement/light"
+
+        # Triggers sirens if changed
+        if current_status != previous_status:
+            if current_status == "Light Detected":
+                log_event("Light Detected")
+                alert()
+            elif current_status == "Intrusion Detected":
+                log_event("Intrusion Detected")
+                alert()
+            previous_status = current_status
+
+        # Always apply SAFE-state behavior
+        if current_status == "SAFE: No movement/light":
+            led_green.on()
+            led_red.off()
+            led_yellow.off()
+            tone.duty_u16(0)
+
+        # Serve Web Page
+        conn, addr = server.accept()
+        print("Client connected from", addr)
+        request = conn.recv(1024)
+        response = web_page(current_status)
+        conn.sendall(response)
+        conn.close()
+
+    except Exception as e:
+        print("Web server error:", e)
+        try:
+            conn.close()
+        except:
+            pass
+    #Helps clear garbage from memory
+    gc.collect()
+    sleep(0.3)
+
+
