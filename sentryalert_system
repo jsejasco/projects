@@ -1,0 +1,83 @@
+#----------------------------------------------------------------
+# Name: John D Sejas-Cordova
+# SYST101 Final Project - SENTRY
+# Movement + Light Detection with Siren
+#----------------------------------------------------------------
+
+from machine import PWM, Pin, ADC
+from time import sleep, localtime
+import time
+import ultra  # Make sure this is your ultrasonic sensor module
+
+#----------------------------------------------------------------
+# Hardware Setup
+#----------------------------------------------------------------
+tone = PWM(Pin(2))
+led_red = Pin(10, Pin.OUT)
+led_yellow = Pin(11, Pin.OUT)
+led_green = Pin(12, Pin.OUT)
+light_sensor = ADC(26)
+
+#----------------------------------------------------------------
+# Logging Function
+#----------------------------------------------------------------
+def log_event(message):
+    timestamp = localtime()
+    timestr = "{:04d}-{:02d}-{:02d} {:02d}:{:02d}:{:02d}".format(
+        timestamp[0], timestamp[1], timestamp[2],
+        timestamp[3], timestamp[4], timestamp[5]
+    )
+    log_message = "{} - {}\n".format(timestr, message)
+    print("Logging:", log_message.strip())
+    with open("log.txt", "a") as f:
+        f.write(log_message)
+
+#----------------------------------------------------------------
+# Alert Function (Sound + LED effect)
+#----------------------------------------------------------------
+def alert():
+    for i in range(20):
+        tone.duty_u16(30000)
+        tone.freq(2000)
+        time.sleep(0.0001)
+        tone.freq(4000)
+        time.sleep(0.0001)
+        if i % 1000 == 0:
+            led_red.toggle()
+            led_yellow.toggle()
+            led_green.off()
+
+#----------------------------------------------------------------
+# Main Program Loop
+#----------------------------------------------------------------
+# Thresholds (adjust as needed)
+DISTANCE_THRESHOLD = 30    # cm
+LIGHT_THRESHOLD = 62000    # brightness (0-65535 scale)
+
+while True:
+    distance = ultra.ultra()                # Get distance in cm
+    light_val = light_sensor.read_u16()     # Read light level
+
+    print(f"Distance: {distance:.1f} cm | Light: {light_val}")
+
+    if distance < DISTANCE_THRESHOLD or light_val < LIGHT_THRESHOLD:
+        # Both conditions are met: movement and light detected
+        now = localtime()
+        date_string = "{:04d}-{:02d}-{:02d}".format(now[0], now[1], now[2])
+        time_string = "{:02d}:{:02d}:{:02d}".format(now[3], now[4], now[5])
+
+        if distance > DISTANCE_THRESHOLD and light_val < LIGHT_THRESHOLD:
+            log_event("Light Detected")
+        else:
+            log_event("Intrusion Detected")
+        alert()
+    else:
+        # Safe: show green LED, mute tone
+        led_green.on()
+        led_red.off()
+        led_yellow.off()
+        tone.duty_u16(0)
+        print("Safe: No movement/light\n")
+
+    sleep(0.5)  # Adjust based on your responsiveness needs
+
